@@ -2,13 +2,13 @@ from espn_api.football import League
 import numpy as np
 import csv
 
-id = 235837
+id = 906364
 year = 2020
 # For saving simulation results
-leaguename = 'friends'
+leaguename = 'Johnson'
 
-league = League(league_id=235837, year=2020, swid='960A4466-0190-46A6-926B-4C7411602D3B',
-espn_s2='AEC1%2BEdz7P6rOeLgGrgN163zuJFd65XBRcdxIoBDZ62cOYs0fTwu9XmlSl6tpkVyAMdB27LeKUJKiyMwpjfW%2B%2BxwCXMvN3qa8GWKDyMq0WxgC5EZy1TSU3Ws6DVbW2GSYr7kZwIKjL%2BKER4VhxC%2BUQ7RAH2SVtfSWn2RxibenHT%2FagC1ijS%2BAgz4YQ47QeS3adaNl7WB%2FFUh9nAliyVf8TYScLPkhiaxOUkAZ3tVjsxtAMFATxHv3Ylpjz%2BU5yuUBqn5jR2%2FDM%2FaPN%2BCe9Zb0FLu')
+league = League(league_id=906364, year=2020, swid='960A4466-0190-46A6-926B-4C7411602D3B',
+espn_s2='AEBZY7c0EB8kSiEbA3guFdDr3H7bmSnSPEmxEXiaEeEz4kfMGA6%2BDxk3U3eznlcz9lquh0Tw86tX220Bcz%2FCBU8ynKt57Z6ERGrGwY8XpwvcSwIf2o8IfSEL7C%2BVH8FNKhKLDa34sSGsEUReuTSrTSrYWqax1l0hSgcDADebrE%2FWcSgAo6GMXOd%2Fp9vF8pYcehYt4fmlVJx4NBysKrboEPXdith2XzWvOVSWdyKe7PVWSp7TtFjkmritmcyacT4Tdxi8gt2Kn5QVbiQqE5wVoVJf')
 
 teams = league.teams
 
@@ -16,19 +16,6 @@ teams = league.teams
 week_current = league.current_week # not yet played out
 #week_current = 5
 nteams = len(teams)
-
-# Get current standings and points
-# Team order:
-# Jordan
-# Isaac
-# Milburn
-# Me
-# Johnson
-# Ewing
-# Marieke
-# Swanson
-# Webbos
-# Claude
 
 """
 Use this block to get H2H wins from espn data
@@ -121,13 +108,13 @@ index = np.lexsort( (current_points_for, current_wins) )[::-1] # Numpy array of 
 #print("=======================================================")
 print("="*80)
 print("Standings after Week %2i" % (week_current-1) )
-print("%40s %11s %14s" % ("Team (Owner)", "Record", "Points for"))
+print("%50s %11s %14s" % ("Team (Owner)", "Record", "Points for"))
 #print("----------------------------------------------------")
 print("="*80)
 for i in index:
     team_name_owner = teams[i].team_name + " (" + teams[i].owner + ")"
     #team_name_owner = team_name_owner.ljust(50)
-    print("%40s      %i-%i-%i %12.2f" % (team_name_owner, record[i,0], record[i,1], record[i,2], current_points_for[i]) )
+    print("%50s      %i-%i-%i %12.2f" % (team_name_owner, record[i,0], record[i,1], record[i,2], current_points_for[i]) )
     #print("%30s    %i-%i-%i %12.2f" % (teams[i].team_name, record[i,0], record[i,1], record[i,2], current_points_for[i]) )
     #print("%30s %6i %12.2f" % (teams[i].team_name, current_wins[i], current_points_for[i]) )
     #print(teams[i].team_name, current_wins[i], current_points_for[i])
