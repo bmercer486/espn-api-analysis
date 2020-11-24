@@ -14,7 +14,7 @@ teams = league.teams
 
 # League info
 week_current = league.current_week # not yet played out
-week_current = 5
+#week_current = 5
 nteams = len(teams)
 
 # Get current standings and points
@@ -55,33 +55,20 @@ for idx_t, t in enumerate(teams):
         if(t.scores[w] > opponent.scores[w]):
             current_wins[idx_t] += 1
             record[idx_t,0] += 1
-            print("win")
         elif(t.scores[w] < opponent.scores[w]):
             record[idx_t,1] += 1
-            print("loss")
         elif(t.scores[w] == opponent.scores[w]):
             record[idx_t,2] += 1
-            print("tie")
 
 """
 # These 3 variables will have the same index and match on those indexes
 schedule: List[Team]
 scores: List[int]
 outcomes: List[str]
-
-Algorithm for getting top 5 win
-1. For each week w = 1, current_week:
-  2. For each team:
-     get the score for each team using team.scores[week]
-     Store in array that follows team order
-  3. Sort the scores using np.argsort
-  4. Define the cutoff score
-  5. For each team above the cutoff score, add a win
-  ---> Check for ties?
 """
 
-
 # Loop on weeks
+weekly_points_winners = []
 for w in range(0,week_current-1):
     weekly_scores = []
     # Get scores for each team
@@ -96,33 +83,38 @@ for w in range(0,week_current-1):
     # Assign losses to bottom 5 ([5::] covers items 6,7,8,9,10)
     for i in sorted_scores[5::]:
         record[i,1] += 1
+    # Identify the winner of most weekly points
+    weekly_points_winners.append(teams[sorted_scores[0]])
     # Add some code to deal with ties?
     # Also the above assumes 10 teams
-    # Top 5 cutoff is above sorted score with index 5 (5,6,7,8,9 are bottom 5)
-    # cutoff_score = weekly_scores[sorted_scores[5]]
-    # print(cutoff_score)
-    # for idx_t, t in enumerate(teams):
-    #     if(weekly_scores[idx_t] > cutoff_score):
-    #         current_wins[idx_t] += 1
-    #         record[idx_t,0] += 1
-    #     elif(weekly_scores[idx_t] == cutoff_score or weekly_scores[idx_t] < cutoff_score):
-    #         record[idx_t,1] += 1
-
 
 # Sort the standings in descending order and get the index to match up with teams
 # Sort on Total Wins and then Total Points For
 index = np.lexsort( (current_points_for, current_wins) )[::-1] # Numpy array of integers
 
 # Debugging: Print the standings
-# print("Final Standings:")
-print("Standings after week %2i" % (week_current-1) )
-print("%30s %8s %12s" % ("Team name", "Record", "Points for"))
-print("----------------------------------------------------")
+#print("=======================================================")
+print("="*80)
+print("Standings after Week %2i" % (week_current-1) )
+print("%40s %11s %14s" % ("Team (Owner)", "Record", "Points for"))
+#print("----------------------------------------------------")
+print("="*80)
 for i in index:
-    print("%30s %3i-%i-%i %12.2f" % (teams[i].team_name, record[i,0], record[i,1], record[i,2], current_points_for[i]) )
+    team_name_owner = teams[i].team_name + " (" + teams[i].owner + ")"
+    #team_name_owner = team_name_owner.ljust(50)
+    print("%40s      %i-%i-%i %12.2f" % (team_name_owner, record[i,0], record[i,1], record[i,2], current_points_for[i]) )
+    #print("%30s    %i-%i-%i %12.2f" % (teams[i].team_name, record[i,0], record[i,1], record[i,2], current_points_for[i]) )
     #print("%30s %6i %12.2f" % (teams[i].team_name, current_wins[i], current_points_for[i]) )
     #print(teams[i].team_name, current_wins[i], current_points_for[i])
 
+# Print weekly most points winners of weekly most points
+print("")
+print("====================================================")
+print("Weekly most points")
+print("====================================================")
+for w in range(0, week_current-1):
+    team_name_owner = weekly_points_winners[w].team_name + " (" + weekly_points_winners[w].owner + ")"
+    print("Week %2i: %s" % (w+1, team_name_owner) )
 
 
 """
