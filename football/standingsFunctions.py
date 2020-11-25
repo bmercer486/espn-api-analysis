@@ -153,9 +153,11 @@ def printStandings(league, week):
     # Return the sorted list of teams, their record, and points for
     ranked_teams = []
     sorted_record = np.zeros( record.shape, dtype=int )
+    sorted_points_for = []
     for i, irank in enumerate(index):
         ranked_teams.append(teams[irank])
         sorted_record[i,::] = record[irank,::]
+        sorted_points_for.append(points_for[irank])
 
     print("="*80)
     print("Standings Through Week %i" % (week) )
@@ -165,7 +167,7 @@ def printStandings(league, week):
     for i, t in enumerate(ranked_teams):
         team_name_owner = t.team_name + " (" + t.owner + ")"
         rec = str(sorted_record[i,0])+"-"+str(sorted_record[i,1])+"-"+str(sorted_record[i,2])
-        print("%50s %12s %14.2f" % (team_name_owner, rec, points_for[i]) )
+        print("%50s %12s %14.2f" % (team_name_owner, rec, sorted_points_for[i]) )
 
 def printWeeklyMostPoints(league, week):
 
@@ -181,6 +183,7 @@ def printWeeklyMostPoints(league, week):
         print("Week %2i: %s" % (w+1, team_name_owner) )
 
 
+"""
 # Test the functions
 id = 906364
 year = 2020
@@ -198,3 +201,4 @@ print(leaguename)
 printStandings(league, week)
 print("")
 printWeeklyMostPoints(league, week)
+"""
