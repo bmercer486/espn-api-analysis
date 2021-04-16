@@ -30,3 +30,4 @@ Fun features to add:
       --> Losing H2H despite high point total for the week
       --> Low in standings despite high total fantasy points
       --> How could you quantify these factors into a number and rank luckiness?
+* Measure roster start/sit skill, see https://stmorse.github.io/journal/fantasy-bench.html
