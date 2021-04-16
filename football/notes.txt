@@ -1,0 +1,32 @@
+April 15 2021
+What works
+* standingsFunctions.py can get standings for any week, up to the current week. It can do just H2H
+  or it can also account for the extra win/loss based on bottom/top half teams in a given week. It
+  can also print the standings and the most points per week in a user-friendly format.
+* standings_<league>.py for friends and Johnson's league prints the standings and extra WL. Useful
+  for in-season calculation of these things without doing in by hand
+* odds_<league>.py attempts to predict odds of making the playoffs. It doesn't quite work for
+  Johnson's league yet because his playoff seeding is top 4 by record, then top 2 by most points
+  remaining.  
+
+Big features to add
+* Playoff odds simulator for each league. Create several options for how to simulate matchup
+  outcomes. Two basic ones are "draw scores from a distribution" and "coin flip", i.e. coin flip
+  assumes that everything is completely luck-based. You should standardize the score outcomes
+  functions. It would be really cool if this could somehow be based on going-forward projections of
+  individual player performance based on current roster construciton; otherwise, just make a few
+  functions that simulate a score so that you can implement the options repeatably for each league.
+  For example:
+  --> Score drawn from normal distribution with mean and stdev
+  --> Score drawn from lognomral distribution with mean and stdev
+
+Fun features to add:
+* Historical performance in a table or graph form, per league. Some ideas:
+  --> Most H2H wins all time (regular season and/or playoffs)
+  --> Total fantasy points all time (regular season and/or playoffs)
+  --> Total wins/losses against each opponent, e.g. who have you dominated, who is your rival
+  --> In-season "luck" calculator. How do you define bad luck? It could be
+      --> Scoring less points than expected
+      --> Losing H2H despite high point total for the week
+      --> Low in standings despite high total fantasy points
+      --> How could you quantify these factors into a number and rank luckiness?
