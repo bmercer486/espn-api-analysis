@@ -3,7 +3,6 @@
 # First header
 
 This is a new line of text
-======================
 
 You can use the [editor on GitHub](https://github.com/bmercer486/espn-api-analysis/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
