@@ -2,6 +2,14 @@ from espn_api.football import League
 import numpy as np
 import csv
 
+"""
+def standings(scoringData, extraWL=False):
+    # Instead of pulling teams and scores from espn, input your own data
+    # Useful for calculating standings in simulating playoff odds
+    # Check if python can do overloaded function names (probably)
+"""
+
+
 def standings(league, week, extraWL=False):
 
     """
@@ -11,10 +19,9 @@ def standings(league, week, extraWL=False):
     extraWL: boolean, False just gets h2h wins, True adds on extra W/L for top/bottom half of teams
 
     Returns a tuple with four entries:
-    [0] = Ranked list of teams (first in list is in first place)
-    [1] = numpy array, rows are each team, columns are win/loss/tie counts
-    [2] = List of total points scored for each team
-    [3] = List of weekly most points winners
+    [0] = numpy array, rows are each team, columns are win/loss/tie counts
+    [1] = List of total points scored for each team
+    [2] = List of weekly most points winners
     """
 
     # Import the league teams
