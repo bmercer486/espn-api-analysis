@@ -3,9 +3,11 @@ import pickle
 from pathlib import Path
 import sys
 
-# Let's loop on all teams for all years and see what data we can gather
-ID = 235837 # Friends league
+# League info for the friends league
+ID = 235837
 years = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+league_swid = '960A4466-0190-46A6-926B-4C7411602D3B'
+league_espn_s2 = 'AEC1%2BEdz7P6rOeLgGrgN163zuJFd65XBRcdxIoBDZ62cOYs0fTwu9XmlSl6tpkVyAMdB27LeKUJKiyMwpjfW%2B%2BxwCXMvN3qa8GWKDyMq0WxgC5EZy1TSU3Ws6DVbW2GSYr7kZwIKjL%2BKER4VhxC%2BUQ7RAH2SVtfSWn2RxibenHT%2FagC1ijS%2BAgz4YQ47QeS3adaNl7WB%2FFUh9nAliyVf8TYScLPkhiaxOUkAZ3tVjsxtAMFATxHv3Ylpjz%2BU5yuUBqn5jR2%2FDM%2FaPN%2BCe9Zb0FLu'
 
 # If the file already exists then load it instead of pulling from espn
 fileName = "friends_league_history_list.pkl"
@@ -28,8 +30,7 @@ else:
     # Pull all the leage data from espn
     Leagues = []
     for y in years:
-        L = League(league_id=ID, year=y, swid='960A4466-0190-46A6-926B-4C7411602D3B',
-                espn_s2='AEC1%2BEdz7P6rOeLgGrgN163zuJFd65XBRcdxIoBDZ62cOYs0fTwu9XmlSl6tpkVyAMdB27LeKUJKiyMwpjfW%2B%2BxwCXMvN3qa8GWKDyMq0WxgC5EZy1TSU3Ws6DVbW2GSYr7kZwIKjL%2BKER4VhxC%2BUQ7RAH2SVtfSWn2RxibenHT%2FagC1ijS%2BAgz4YQ47QeS3adaNl7WB%2FFUh9nAliyVf8TYScLPkhiaxOUkAZ3tVjsxtAMFATxHv3Ylpjz%2BU5yuUBqn5jR2%2FDM%2FaPN%2BCe9Zb0FLu')
+        L = League(league_id=ID, year=y, swid=league_swid, espn_s2=league_espn_s2)
         Leagues.append(L)
         print("Pulled league data for year = ", y)
 
@@ -94,11 +95,11 @@ for ownerIndex, owner in enumerate(owners):
 print("="*120)
 print("Historical Performance for years %i to %i" % (years[0], years[-1]) )
 print("Season stats (all-time measures are regular season only)")
-print("%20s %20s %30s %30s %30s" % ("Owner", "Championships", "All Time H2H Wins", "All Time Points for", "All Time Points Against"))
+print("%20s %20s %25s %25s %30s" % ("Owner", "Championships", "All Time H2H Wins", "All Time Points for", "All Time Points Against"))
 #print("----------------------------------------------------")
 print("="*120)
 for i, owner in enumerate(owners):
-    print("%20s %30i %30i %30.2f %30.2f" % (owner, championships[i], h2hwins[i], pointsFor[i], pointsAgainst[i]) )
+    print("%20s %20i %25i %25.2f %30.2f" % (owner, championships[i], h2hwins[i], pointsFor[i], pointsAgainst[i]) )
 
 # Print stat averages
 print("="*120)
