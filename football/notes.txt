@@ -31,3 +31,21 @@ Fun features to add:
       --> Low in standings despite high total fantasy points
       --> How could you quantify these factors into a number and rank luckiness?
 * Measure roster start/sit skill, see https://stmorse.github.io/journal/fantasy-bench.html
+
+May 10 2021
+Fixed Johnson's league odds calculator to correctly handle the wildcard stuff.
+
+A good update: can you use or modify the standings calculator function to figure out the standings
+per simulation? This would be much cleaner than what you currently have. Basically the idea would
+be:
+* Simulate a bunch of scores for the remainder of the regular season
+* Input the weekly scores and team schedules into the standings function and have it spit out end-of
+  season standings (which do not do any wildcard calculation)
+  --> So then you modify the standings for Johnson's league
+* You may need a new or modified standings calculation function to do this but it would be a good
+  idea
+
+Historical project: Start with something easy, say, most fantasy points all-time
+--> Hard part: loop on years and accumulate owners
+--> Once you have owners, loop on owners and add up regular season fantasy point totals
+--> Think about how to plot
