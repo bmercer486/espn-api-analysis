@@ -18,8 +18,9 @@ league = League(league_id=id, year=year, swid=swid, espn_s2=espn_s2)
 teams = league.teams
 
 # League info
-week_current = league.current_week # not yet played out
-week_end = 12 # final week to consider for calculating odds
+# week_current = league.current_week # not yet played out
+week_current = 10
+week_end = 13 # final week to consider for calculating odds
 nteams = len(teams)
 nseeds = 6
 
@@ -28,6 +29,7 @@ s = standings(league,week_current,True)
 record = s[0]
 current_points_for = s[1]
 current_wins = record[::,0]
+print(s)
 
 # Print the standings if desired
 #print(leaguename)
@@ -62,7 +64,7 @@ for t in teams:
 # got 2nd place in the final standings
 outcomes = np.zeros( (nteams,nteams), dtype=int)
 
-nsim = 10000
+nsim = 1
 start_time = time.time()
 for n in range(nsim):
     # Loop on teams to simulate future scores for each team
@@ -107,22 +109,56 @@ for n in range(nsim):
     # Sort on Total Wins and then Total Points For
     index = np.lexsort( (total_points_for, total_wins) )[::-1] # Numpy array of integers
 
+    '''
+    In Johnson's league, top 4 playoff teams are by record, then seeds 5 and 6 are by most points among the remaining 6 teams
+
+    So what you want to do is get 2 groups: top4 (seeds 1-4) and wildcard (seeds 5 and 6)
+    '''
+
+    # The top 4 teams by record
+    top4 = list(index[0:4])
+
+    # For wildcard, sort by points only, but only take indices 4:end
+    sorted_by_score_only = np.argsort(total_points_for)[::-1]
+    wildcard = list() # Empty
+    # Add teams to the wildcard list only if they aren't in the top 4
+    for i in sorted_by_score_only:
+        if i not in top4:
+            wildcard.append(i)
+
+    # Standings array is a list of the team indices from first to last
+    standings = top4.copy()
+    standings.extend(wildcard) # top4, followed by wildcard
+
+    # # Debug
+    # print(top4)
+    # print(sorted_by_score_only)
+    # print(wildcard)
+    # print(standings[9])
+    # print(len(top4))
+    # print(len(wildcard))
+    # print(standings)
+
+    '''
+    For your outcomes array, you want:
+    outcomes[0:4] is correct according to index[i] as below
+    outcomes[4::] should be based on sort_index_total_points but excluding the top 4 teams
+    So it's probably smart to just make a list that includes those 6 teams ordered
+    '''
     # Fill out the 'outcomes' array for this iteration
     for i in range(nteams):
         # 'i' represents finishing place from first to worst
         # first place team is index[0]
-        # Second place team is index[1]
+        # ---> Use "standings" rather than "index" to get the wildcard ranking right
         # etc...
-        outcomes[index[i]][i] += 1
+        outcomes[standings[i]][i] += 1
 
-    # # Debugging: Print the standings
-    # print("Final Standings:")
-    # for i in index:
-    #     print(teams[i].team_name, total_wins[i], total_points_for[i])
+    # Debugging: Print the standings
+    print("Final Standings:")
+    for i in standings:
+        print(teams[i].team_name, total_wins[i], total_points_for[i])
 
-# # Debugging: check total wins
-# for i in index:
-#     print(teams[i].team_name, total_wins[i], total_points_for[i])
+    print("==============================")
 
 # Compute final probabilities as percentages
 prob = (outcomes/nsim)*100
