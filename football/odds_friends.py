@@ -3,6 +3,7 @@ from standingsFunctions import *
 import numpy as np
 import time
 import csv
+import sys
 
 id = 235837
 year = 2020
@@ -14,19 +15,27 @@ leaguename = 'friends'
 # Define the league
 league = League(league_id=id, year=year, swid=swid, espn_s2=espn_s2)
 
-# Team objects
+# League info
+# week_current = league.current_week # not yet played out
+week_current = 12
+week_end = 12 # final week to consider for calculating odds
+# Don't do calculation if it is requested for week at or beyond end of regular season
+if(week_current > week_end):
+    print("Error: Current week is at or beyond end of regular season")
+    sys.exit()
+
+# List of teams
 teams = league.teams
 
-# League info
-week_current = league.current_week # not yet played out
-week_end = 12 # final week to consider for calculating odds
+# Teams, seeds, extra WL settings
 nteams = len(teams)
 nseeds = 4
+extraWL = True
 
 # Get the league standings
-s = standings(league,week_current,True)
-record = s[0]
-current_points_for = s[1]
+current_standings = standings(league,week_current,extraWL)
+record = current_standings[0]
+current_points_for = current_standings[1]
 current_wins = record[::,0]
 
 # Print the standings if desired
@@ -35,6 +44,9 @@ current_wins = record[::,0]
 
 # List of the remaining weeks
 weeks_remaining = list(range(week_current,week_end+1))
+
+# List of all weeks
+allweeks = list(range(1,week_end+1))
 
 """
 # Get current standings and points
@@ -65,23 +77,37 @@ outcomes = np.zeros( (nteams,nteams), dtype=int)
 nsim = 10000
 start_time = time.time()
 for n in range(nsim):
+    """
     # Loop on teams to simulate future scores for each team
     simulated_scores = [[0] * len(weeks_remaining) for i in range(nteams)]
     # simulated_scores = [ [0, 0, 0] ]*8 # Replace 3 zeros with general number of weeks remaining
     simulated_wins = [0] * nteams
     simulated_points_for = [0] * nteams
-    total_wins = []
-    total_points_for = []
+    """
+    # total_wins = []
+    # total_points_for = []
+    allscores = np.zeros((nteams,week_end))
 
-    # Simulate scores in remaining weeks
-    weekly_scores = []
+    # Simulate scores in season
     for idx_t, t in enumerate(teams):
-        # Simulate one score for each remaining week
-        # Score simulation based on team's avg score/week and stdev
-        for idx_w, w in enumerate(weeks_remaining):
-            # Later use e.g. normal distribution for this team's scoring history
-            simulated_scores[idx_t][idx_w] = np.random.normal(avg[idx_t],stdev[idx_t])
+        for idx_w, w in enumerate(allweeks):
+            # If week has been played, get it from team data
+            if(w < week_current):
+                allscores[idx_t][idx_w] = t.scores[idx_w]
+            # If the week has not been played, then simulate it
+            else:
+                # Normal distribution draw
+                allscores[idx_t][idx_w] = np.random.normal(avg[idx_t],stdev[idx_t])
 
+    # Get the standings based on simulated season-end results
+    simulated_standings = standingsGivenScores(allscores, teams, extraWL)
+    sim_record = simulated_standings[0]
+    total_wins = sim_record[::,0]
+    total_points_for = simulated_standings[1]
+
+    """
+    #Let the standings function figure out this part instead
+    ================================================================
     # Loop on teams and figure out how many wins they have based on scores/schedule
     for idx_t, t in enumerate(teams):
         for idx_w, w in enumerate(weeks_remaining):
@@ -99,9 +125,11 @@ for n in range(nsim):
             if(week_scores[idx_t] > cutoff_score):
                 simulated_wins[idx_t] += 1
 
+
         # Compute final total wins and points for
         total_wins.append(current_wins[idx_t] + simulated_wins[idx_t])
         total_points_for.append(current_points_for[idx_t] + sum(simulated_scores[idx_t]) )
+        """
 
     # Sort the standings in descending order and get the index to match up with teams
     # Sort on Total Wins and then Total Points For
