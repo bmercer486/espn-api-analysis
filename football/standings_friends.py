@@ -10,12 +10,28 @@ espn_s2='AEC1%2BEdz7P6rOeLgGrgN163zuJFd65XBRcdxIoBDZ62cOYs0fTwu9XmlSl6tpkVyAMdB2
 # For saving simulation results'
 leaguename = 'friends'
 
+# Get league
 league = League(league_id=id, year=year, swid=swid, espn_s2=espn_s2)
+
+# Get teams
+teams = league.teams
 
 # Week to get the standings through
 week = league.current_week-1
+week = 11
 
-print(leaguename)
-printStandings(league, week)
+# Do we use extra win-loss?
+extraWL = True
+
+# Old way
+# print("League = ", leaguename)
+# printStandings(league, week)
+# print("")
+# printWeeklyMostPoints(league, week)
+
+# New way
+print("League = ", leaguename)
+s = standings(league, week, extraWL)
+printStandings(s, teams, week)
 print("")
-printWeeklyMostPoints(league, week)
+printWeeklyMostPoints(s, week)

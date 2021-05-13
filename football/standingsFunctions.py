@@ -8,7 +8,103 @@ def standings(scoringData, extraWL=False):
     # Useful for calculating standings in simulating playoff odds
     # Check if python can do overloaded function names (probably)
 """
+def standingsGivenScores(scores, teams, extraWL=False):
 
+    """
+    scores: array of size (nteams, nweeks) with each team's score in each week
+    teams: list of teams
+    extraWL: boolean, False just gets h2h wins, True adds on extra W/L for top/bottom half of teams
+
+    Returns a tuple with four entries:
+    [0] = numpy array, rows are each team, columns are win/loss/tie counts
+    [1] = List of total points scored for each team
+    [2] = List of weekly most points winners
+    """
+
+    # Number of teams in the league
+    nteams = len(teams)
+    nweeks = np.shape(scores)[1]
+
+    # Head to head wins - determine by matchup, per week, manually
+    points_for = [0] * nteams
+    wins = [0] * nteams
+    # record[i,0] = total wins for team i
+    # record[i,1] = total losses for team i
+    # record[i,2] = total ties for team i
+    record = np.zeros( (nteams,3), dtype=int)
+    for idx_t, t in enumerate(teams):
+        for w in range(0,nweeks):
+            # Accumulate points for
+            points_for[idx_t] += scores[idx_t][w]
+            # Find this week's opponent for team 't'
+            opponent = t.schedule[w] # Team object: opponent in week 'w'
+            opponent_idx = teams.index(opponent)
+            # Accumulate H2H win if earned
+            if(scores[idx_t][w] > opponent.scores[w]):
+                wins[idx_t] += 1
+                record[idx_t,0] += 1
+            elif(scores[idx_t][w] < opponent.scores[w]):
+                record[idx_t,1] += 1
+            elif(scores[idx_t][w] == opponent.scores[w]):
+                record[idx_t,2] += 1
+
+    """
+    # These 3 variables will have the same index and match on those indexes
+    schedule: List[Team]
+    scores: List[int]
+    outcomes: List[str]
+    """
+
+    # Standings including the extra W/L for top half/bottom half teams on a weekly basis
+    if(extraWL):
+        weekly_points_winners = []
+        for w in range(0,nweeks):
+            weekly_scores = []
+            # Get scores for each team
+            for idx_t, t in enumerate(teams):
+                weekly_scores.append(scores[idx_t][w])
+            # Sort the scores for the week
+            sorted_teams = np.argsort(weekly_scores)[::-1]
+            # cutoff_score: score of team #5 - any below this is bottom 5
+            cutoff_position = int(nteams/2) # List index of cutoff team
+            cutoff_idx = sorted_teams[cutoff_position-1] # 5th ranking team this week
+            cutoff_score = weekly_scores[cutoff_idx]
+            # Check for ties
+            tied_idx = []
+            extraWL_tie = False
+            for idx_t, t in enumerate(teams):
+                # Don't check equality on the team with cutoff score
+                if(idx_t != cutoff_idx):
+                    # If this team's score is equal to the 5th ranked team's score, then these teams are involved in a tie
+                    if(weekly_scores[idx_t] == cutoff_score):
+                        tied_idx.append(idx_t)
+            # If tied_idx has nonzero length, then be sure to add team #5 into the list as a team who has a tie
+            if(len(tied_idx) > 0):
+                tied_idx.append(cutoff_idx)
+            # Assign wins to top half of teams - [0:n] does *not* include end item
+            for i in sorted_teams[0:cutoff_position]:
+                # If the team is involved in a tie, record a tie and not a win
+                if(i in tied_idx):
+                    record[i,2] +=1
+                # Record a win
+                else:
+                    wins[i] += 1
+                    record[i,0] += 1
+            # Assign losses to bottom half of teams - [n::] includes item n til the end of list
+            for i in sorted_teams[cutoff_position::]:
+                # If the team is involved in a tie, record a tie and not a loss
+                if(i in tied_idx):
+                    record[i,2] += 1
+                # Record a loss
+                else:
+                    record[i,1] += 1
+
+            # Identify the winner of most weekly points
+            weekly_points_winners.append(teams[sorted_teams[0]])
+            # Also the above assumes 10 teams
+
+    # Return the record, points for, and weekly points weekly_points_winners
+    return record, points_for, weekly_points_winners
 
 def standings(league, week, extraWL=False):
 
@@ -137,7 +233,8 @@ def standings(league, week, extraWL=False):
     return current_standings_teams, sorted_record, points_for, weekly_points_winners
 """
 
-def printStandings(league, week):
+def printStandings(s, teams, week):
+#def printStandings(league, week):
 
     """
     s = standings(league, week, True)
@@ -146,10 +243,10 @@ def printStandings(league, week):
     points_for = s[2]
     """
 
-    teams = league.teams
+    # teams = league.teams
     nteams = len(teams)
 
-    s = standings(league, week, True)
+    # s = standings(league, week, True)
     record = s[0]
     points_for = s[1]
 
@@ -176,9 +273,10 @@ def printStandings(league, week):
         rec = str(sorted_record[i,0])+"-"+str(sorted_record[i,1])+"-"+str(sorted_record[i,2])
         print("%50s %12s %14.2f" % (team_name_owner, rec, sorted_points_for[i]) )
 
-def printWeeklyMostPoints(league, week):
+def printWeeklyMostPoints(s, week):
+# def printWeeklyMostPoints(league, week):
 
-    s = standings(league, week, True)
+    # s = standings(league, week, True)
     weekly_points_winners = s[2]
 
     # Print weekly most points winners of weekly most points
