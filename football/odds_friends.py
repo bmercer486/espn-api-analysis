@@ -5,6 +5,9 @@ import time
 import csv
 import sys
 
+# Set seeds
+np.random.seed(2021)
+
 id = 235837
 year = 2020
 swid='960A4466-0190-46A6-926B-4C7411602D3B'
@@ -74,7 +77,7 @@ for t in teams:
 # got 2nd place in the final standings
 outcomes = np.zeros( (nteams,nteams), dtype=int)
 
-nsim = 10000
+nsim = 100
 start_time = time.time()
 for n in range(nsim):
     """
