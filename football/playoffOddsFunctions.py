@@ -5,7 +5,7 @@ import time
 import csv
 import sys
 
-def playoffOdds(league, nseeds, week_current, week_end, extraWL, distribution='normal', nsim='100'):
+def playoffOdds(league, nseeds, week_current, week_end, extraWL, rng, distribution='normal', nsim='100'):
 
     # Don't do calculation if it is requested for week at or beyond end of regular season
     if(week_current > week_end):
@@ -84,13 +84,13 @@ def playoffOdds(league, nseeds, week_current, week_end, extraWL, distribution='n
                 else:
                     if(distribution == 'normal'):
                         # Normal distribution draw
-                        allscores[idx_t][idx_w] = np.random.normal(avg[idx_t],stdev[idx_t])
+                        allscores[idx_t][idx_w] = rng.normal(avg[idx_t], stdev[idx_t])
                     if(distribution == 'lognormal'):
                         # Log normal distribution draw
-                        allscores[idx_t][idx_w] = np.random.lognormal(m[idx_t],s[idx_t])
+                        allscores[idx_t][idx_w] = rng.lognormal(m[idx_t], s[idx_t])
                     if(distribution == 'random'):
                         # All teams perform according to the same distribution, assumed normal
-                        allscores[idx_t][idx_w] = np.random.normal(league_avg, league_stdev)
+                        allscores[idx_t][idx_w] = rng.normal(league_avg, league_stdev)
 
         # Get the standings based on simulated season-end results
         simulated_standings = standingsGivenScores(allscores, teams, extraWL)

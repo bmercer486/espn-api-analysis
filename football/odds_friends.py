@@ -6,7 +6,7 @@ import time
 import csv
 import sys
 
-# L
+# Leage data
 id = 235837
 year = 2020
 swid='960A4466-0190-46A6-926B-4C7411602D3B'
@@ -19,7 +19,7 @@ league = League(league_id=id, year=year, swid=swid, espn_s2=espn_s2)
 
 # What is the current week?
 # league.current gives the current week real-time
-week_current = 12
+week_current = 4
 
 # Last week of the regular season
 week_end = 12 # final week to consider for calculating odds
@@ -38,10 +38,18 @@ nseeds = 4
 extraWL = True
 
 # Simulation settings
-distribution = 'normal'
+seed = 2021 # Arbitrary
+rng = np.random.default_rng(seed)
+distribution = 'random'
 nsim = 10000
 
-outcomes = playoffOdds(league, nseeds, week_current, week_end, extraWL, distribution, nsim)
+# Get the simulated outcomes
+outcomes = playoffOdds(league, nseeds, week_current, week_end, extraWL, rng, distribution, nsim)
+
+# Print current standings to check that predictions make sense
+print("Current standings")
+s = standings(league, week_current, extraWL)
+printStandings(s, teams, week_current)
 
 # Compute final probabilities as percentages
 prob = (outcomes/nsim)*100
