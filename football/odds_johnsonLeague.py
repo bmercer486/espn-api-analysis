@@ -111,8 +111,8 @@ print("Took ",runtime, " sec to simulate ",nsim, " seasons")
 
 # Print current standings to check that predictions make sense
 print("Current standings")
-s = standings(league, week_current, extraWL)
-printStandings(s, teams, week_current)
+s = standings(league, week_current-1, extraWL)
+printStandings(s, teams, week_current-1)
 
 # Compute final probabilities as percentages
 prob = (outcomes/nsim)*100
