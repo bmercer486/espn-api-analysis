@@ -55,13 +55,15 @@ for n in range(nsim):
     sim_total_points_for = simulated_standings[1]
 
     # Once you have the standings, the playoff seeding needs to be determined by the league rules
+    # Sort first by total wins, then by total points for
     index = np.lexsort( (sim_total_points_for, sim_total_wins) )[::-1] # Numpy array of integers
-
 
     '''
     In Johnson's league, top 4 playoff teams are by record, then seeds 5 and 6 are by most points among the remaining 6 teams
 
-    So what you want to do is get 2 groups: top4 (seeds 1-4) and wildcard (seeds 5 and 6)
+    So what you want to do is get 2 groups:
+    1) top4 (seeds 1-4)
+    2) wildcard (seeds 5 and beyond, based on total points for)
     '''
 
     # The top 4 teams by record
@@ -98,7 +100,7 @@ for n in range(nsim):
     for i in range(nteams):
         # 'i' represents finishing place from first to worst
         # first place team is index[0]
-        # ---> Use "standings" rather than "index" to get the wildcard ranking right
+        # ---> Use "seedrank" rather than "index" to get the wildcard ranking right
         # etc...
         outcomes[seedrank[i]][i] += 1
 
