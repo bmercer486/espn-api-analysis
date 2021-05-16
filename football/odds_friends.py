@@ -2,6 +2,7 @@ from espn_api.football import League
 from standingsFunctions import *
 from playoffOddsFunctions import *
 import numpy as np
+import pandas as pd
 import time
 import csv
 import sys
@@ -41,7 +42,7 @@ extraWL = True
 seed = 2021 # Arbitrary
 rng = np.random.default_rng(seed)
 distribution = 'normal'
-nsim = 10000
+nsim = 10
 
 # The 'outcomes' array stores how many times each team got a particular seed
 # The row is the team and the column is the outcome
@@ -78,6 +79,38 @@ printStandings(s, teams, week_current-1)
 
 # Compute final probabilities as percentages
 prob = (outcomes/nsim)*100
+
+# Playoff odds Is the sum of odds to make any playoff seed
+playoffOdds = []
+seed1 = []
+seed2 = []
+seed3 = []
+seed4 = []
+for idx, t in enumerate(teams):
+    playoffOdds.append(sum(prob[idx][0:nseeds]))
+    seed1.append(prob[idx][0])
+    seed2.append(prob[idx][1])
+    seed3.append(prob[idx][2])
+    seed4.append(prob[idx][3])
+
+# Save into pandas dataframe for plotting later
+df = pd.DataFrame({"Team name": [t.team_name for t in teams],
+                   "Percent chance to make playoffs": playoffOdds,
+                   "Percent chance to make 1 seed": seed1,
+                   "Percent chance to make 2 seed": seed2,
+                   "Percent chance to make 3 seed": seed3,
+                   "Percent chance to make 4 seed": seed4,
+                   })
+
+# Print to check it
+# print(df)
+
+# Save it for later
+filename = leaguename + "playoff_odds" + "_heading_into_week" + str(week_current) + ".pkl"
+df.to_pickle(filename)
+
+
+"""
 # Write results to csv file
 filename = "playoff_odds_" + leaguename + "_heading_into_week" + str(week_current) + ".csv"
 with open(filename, mode='w', newline='') as csvfile:
@@ -86,3 +119,4 @@ with open(filename, mode='w', newline='') as csvfile:
     for idx, t in enumerate(teams):
         lst = [t.team_name, sum(prob[idx][0:nseeds]), prob[idx][0], prob[idx][1], prob[idx][2], prob[idx][3]]
         fwriter.writerow(lst)
+"""
