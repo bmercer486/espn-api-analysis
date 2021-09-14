@@ -42,7 +42,7 @@ extraWL = True
 seed = 2021 # Arbitrary
 rng = np.random.default_rng(seed)
 distribution = 'normal'
-nsim = 10
+nsim = 10000
 
 # The 'outcomes' array stores how many times each team got a particular seed
 # The row is the team and the column is the outcome
@@ -106,7 +106,7 @@ df = pd.DataFrame({"Team name": [t.team_name for t in teams],
 # print(df)
 
 # Save it for later
-filename = leaguename + "playoff_odds" + "_heading_into_week" + str(week_current) + ".pkl"
+filename = leaguename + "_playoff_odds" + "_heading_into_week" + str(week_current) + ".pkl"
 df.to_pickle(filename)
 
 
