@@ -9,7 +9,7 @@ import sys
 
 # Leage data
 id = 235837
-year = 2020
+year = 2021
 swid='960A4466-0190-46A6-926B-4C7411602D3B'
 espn_s2='AEC1%2BEdz7P6rOeLgGrgN163zuJFd65XBRcdxIoBDZ62cOYs0fTwu9XmlSl6tpkVyAMdB27LeKUJKiyMwpjfW%2B%2BxwCXMvN3qa8GWKDyMq0WxgC5EZy1TSU3Ws6DVbW2GSYr7kZwIKjL%2BKER4VhxC%2BUQ7RAH2SVtfSWn2RxibenHT%2FagC1ijS%2BAgz4YQ47QeS3adaNl7WB%2FFUh9nAliyVf8TYScLPkhiaxOUkAZ3tVjsxtAMFATxHv3Ylpjz%2BU5yuUBqn5jR2%2FDM%2FaPN%2BCe9Zb0FLu'
 # For saving simulation results'
@@ -19,11 +19,12 @@ leaguename = 'friends'
 league = League(league_id=id, year=year, swid=swid, espn_s2=espn_s2)
 
 # What is the current week?
-# league.current gives the current week real-time
-week_current = 12
+# league.current_week gives the current week real-time
+week_current = league.current_week
+week_current = 14
 
 # Last week of the regular season
-week_end = 12 # final week to consider for calculating odds
+week_end = 14 # final week to consider for calculating odds
 
 # Don't do calculation if it is requested for week at or beyond end of regular season
 if(week_current > week_end):
@@ -35,14 +36,15 @@ teams = league.teams
 
 # Teams, seeds, extra WL settings
 nteams = len(teams)
-nseeds = 4
+nseeds = 6
 extraWL = True
 
 # Simulation settings
 seed = 2021 # Arbitrary
 rng = np.random.default_rng(seed)
-distribution = 'normal'
-nsim = 10000
+# Distribution is 'normal', 'lognormal', or 'random'
+distribution = 'random'
+nsim = 100000
 
 # The 'outcomes' array stores how many times each team got a particular seed
 # The row is the team and the column is the outcome
@@ -86,12 +88,16 @@ seed1 = []
 seed2 = []
 seed3 = []
 seed4 = []
+seed5 = []
+seed6 = []
 for idx, t in enumerate(teams):
     playoffOdds.append(sum(prob[idx][0:nseeds]))
     seed1.append(prob[idx][0])
     seed2.append(prob[idx][1])
     seed3.append(prob[idx][2])
     seed4.append(prob[idx][3])
+    seed5.append(prob[idx][4])
+    seed6.append(prob[idx][5])
 
 # Save into pandas dataframe for plotting later
 df = pd.DataFrame({"Team name": [t.team_name for t in teams],
@@ -100,6 +106,8 @@ df = pd.DataFrame({"Team name": [t.team_name for t in teams],
                    "Percent chance to make 2 seed": seed2,
                    "Percent chance to make 3 seed": seed3,
                    "Percent chance to make 4 seed": seed4,
+                   "Percent chance to make 5 seed": seed5,
+                   "Percent chance to make 6 seed": seed6,
                    })
 
 # Print to check it
@@ -109,14 +117,11 @@ df = pd.DataFrame({"Team name": [t.team_name for t in teams],
 filename = leaguename + "_playoff_odds" + "_heading_into_week" + str(week_current) + ".pkl"
 df.to_pickle(filename)
 
-
-"""
 # Write results to csv file
-filename = "playoff_odds_" + leaguename + "_heading_into_week" + str(week_current) + ".csv"
+filename = "playoff_odds_" + leaguename + "_heading_into_week_" + str(week_current) + "_year_" + str(year) + ".csv"
 with open(filename, mode='w', newline='') as csvfile:
     fwriter = csv.writer(csvfile)
-    fwriter.writerow(['Team name','% chance make playoffs','% chance 1 seed','% chance 2 seed','% chance 3 seed','% chance 4 seed'])
+    fwriter.writerow(['Team name','% chance make playoffs','% chance 1 seed','% chance 2 seed','% chance 3 seed','% chance 4 seed','% chance 5 seed','% chance 6 seed'])
     for idx, t in enumerate(teams):
-        lst = [t.team_name, sum(prob[idx][0:nseeds]), prob[idx][0], prob[idx][1], prob[idx][2], prob[idx][3]]
+        lst = [t.team_name, sum(prob[idx][0:nseeds]), prob[idx][0], prob[idx][1], prob[idx][2], prob[idx][3],prob[idx][4],prob[idx][5]]
         fwriter.writerow(lst)
-"""

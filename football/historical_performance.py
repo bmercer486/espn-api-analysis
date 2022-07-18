@@ -5,17 +5,18 @@ import sys
 
 # League info for the friends league
 ID = 235837
-years = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+years = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
 league_swid = '960A4466-0190-46A6-926B-4C7411602D3B'
 league_espn_s2 = 'AEC1%2BEdz7P6rOeLgGrgN163zuJFd65XBRcdxIoBDZ62cOYs0fTwu9XmlSl6tpkVyAMdB27LeKUJKiyMwpjfW%2B%2BxwCXMvN3qa8GWKDyMq0WxgC5EZy1TSU3Ws6DVbW2GSYr7kZwIKjL%2BKER4VhxC%2BUQ7RAH2SVtfSWn2RxibenHT%2FagC1ijS%2BAgz4YQ47QeS3adaNl7WB%2FFUh9nAliyVf8TYScLPkhiaxOUkAZ3tVjsxtAMFATxHv3Ylpjz%2BU5yuUBqn5jR2%2FDM%2FaPN%2BCe9Zb0FLu'
 
 # If the file already exists then load it instead of pulling from espn
+fileDir = "."
 fileName = "friends_league_history_list.pkl"
-filePath = Path("./" + fileName)
+filePath = Path(fileDir + "/" + fileName)
 if filePath.is_file():
     # file exists
     print("File exists, loading league data from " + fileName)
-    Leagues = pickle.load( open(fileName, "rb" ) )
+    Leagues = pickle.load( open(filePath, "rb" ) )
     # Check that the saved file matches the requested league id and years
     for n, league in enumerate(Leagues):
         if(league.league_id == ID and league.year == years[n]):
@@ -35,7 +36,7 @@ else:
         print("Pulled league data for year = ", y)
 
     # Save the list of leagues to disk for future access
-    open_file = open(fileName,'wb')
+    open_file = open(filePath,'wb')
     pickle.dump(Leagues, open_file)
     open_file.close()
 
@@ -68,7 +69,7 @@ for ownerIndex, owner in enumerate(owners):
         # Find the owner for this league year
         for i, team in enumerate(league.teams):
             if(owner == team.owner):
-                print("Found owner %s for year %i" % (owner, years[n]))
+                # print("Found owner %s for year %i" % (owner, years[n]))
                 # Accumulate stats for the owner
                 h2hwins[ownerIndex] += team.wins
                 pointsFor[ownerIndex] += team.points_for
@@ -80,26 +81,26 @@ for ownerIndex, owner in enumerate(owners):
                 # Stop the search for owner in this league year
                 break
             if(i==len(league.teams)-1):
-                print("Did not find owner %s for year %i" % (owner, years[n]))
-            '''
-            # Debug: confirm owner not found for given year
-            if(i == len(league.teams)-1 ):
-                print(owner, " not found for year", league.year)
-            '''
+                # print("Did not find owner %s for year %i" % (owner, years[n]))
+                '''
+                # Debug: confirm owner not found for given year
+                if(i == len(league.teams)-1 ):
+                    print(owner, " not found for year", league.year)
+                '''
 
     # Season or per game averages
     ppg[ownerIndex] = pointsFor[ownerIndex]/gamesPlayed[ownerIndex]
     winsPerSeason[ownerIndex] = h2hwins[ownerIndex]/seasonsPlayed[ownerIndex]
 
 # Print stats
-print("="*120)
+print("="*145)
 print("Historical Performance for years %i to %i" % (years[0], years[-1]) )
 print("Season stats (all-time measures are regular season only)")
-print("%20s %20s %25s %25s %30s" % ("Owner", "Championships", "All Time H2H Wins", "All Time Points for", "All Time Points Against"))
+print("%20s %20s %20s %25s %25s %30s" % ("Owner", "Seasons Played", "Championships", "All Time H2H Wins", "All Time Points for", "All Time Points Against"))
 #print("----------------------------------------------------")
-print("="*120)
+print("="*145)
 for i, owner in enumerate(owners):
-    print("%20s %20i %25i %25.2f %30.2f" % (owner, championships[i], h2hwins[i], pointsFor[i], pointsAgainst[i]) )
+    print("%20s %20i %20i %25i %25.2f %30.2f" % (owner, seasonsPlayed[i], championships[i], h2hwins[i], pointsFor[i], pointsAgainst[i]) )
 
 # Print stat averages
 print("="*120)
