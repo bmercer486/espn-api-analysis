@@ -4,25 +4,27 @@ from pathlib import Path
 import sys
 
 # League info for the friends league
-ID = 235837
+from leagueInfo_friends import *
+
+# Years to run history for
 years = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
-league_swid = '960A4466-0190-46A6-926B-4C7411602D3B'
-league_espn_s2 = 'AEC1%2BEdz7P6rOeLgGrgN163zuJFd65XBRcdxIoBDZ62cOYs0fTwu9XmlSl6tpkVyAMdB27LeKUJKiyMwpjfW%2B%2BxwCXMvN3qa8GWKDyMq0WxgC5EZy1TSU3Ws6DVbW2GSYr7kZwIKjL%2BKER4VhxC%2BUQ7RAH2SVtfSWn2RxibenHT%2FagC1ijS%2BAgz4YQ47QeS3adaNl7WB%2FFUh9nAliyVf8TYScLPkhiaxOUkAZ3tVjsxtAMFATxHv3Ylpjz%2BU5yuUBqn5jR2%2FDM%2FaPN%2BCe9Zb0FLu'
+
+# Location to save pkl file or lookup saved data
+fileDir = "."
+fileName = "friends_league_history_data.pkl"
+filePath = Path(fileDir + "/" + fileName)
 
 # If the file already exists then load it instead of pulling from espn
-fileDir = "."
-fileName = "friends_league_history_list.pkl"
-filePath = Path(fileDir + "/" + fileName)
 if filePath.is_file():
     # file exists
     print("File exists, loading league data from " + fileName)
     Leagues = pickle.load( open(filePath, "rb" ) )
     # Check that the saved file matches the requested league id and years
     for n, league in enumerate(Leagues):
-        if(league.league_id == ID and league.year == years[n]):
+        if(league.league_id == id and league.year == years[n]):
             continue
         else:
-            print("Error: loaded list does not match requested years or League ID. Delete the pkl file in the directory and re-run")
+            print("Error: loaded list does not match requested years or League id. Delete the pkl file in the directory and re-run")
             sys.exit()
 
 else:
@@ -31,7 +33,7 @@ else:
     # Pull all the leage data from espn
     Leagues = []
     for y in years:
-        L = League(league_id=ID, year=y, swid=league_swid, espn_s2=league_espn_s2)
+        L = League(league_id=id, year=y, swid=swid, espn_s2=espn_s2)
         Leagues.append(L)
         print("Pulled league data for year = ", y)
 
