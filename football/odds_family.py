@@ -7,24 +7,32 @@ import time
 import csv
 import sys
 
-# Leage data
-id = 966979
+# Import static league data: id, swid, and espn_s2
+from leagueInfo_family import *
+
+# Year and rules
 year = 2021
-swid='960A4466-0190-46A6-926B-4C7411602D3B'
-espn_s2='AEAOAxTswdQI0fXHiS2%2BLWiogDas7SzWLXU3Q1eIjBJfefjaI36OYGHk%2BavMzhyWcy19glyizaxvN31PC%2BLKAfmJo%2Bv1iVtE6nu2sg5NsbV19z9ZgRzne%2BhzD6K9J8WVPViqVTAhNzdWaT9syV%2BLUXNCx%2Bx%2BMIN%2BoV%2By2isIk0ssqYDlIkpvSohjUF0bsIr9hmX5nV5ULlZWt9xudnQxdHTDfhqkQqQ4md%2Fxor1Nu9DO2FsnomeGMZWW3kvYQsVuHYZPwyfqBrMlbqIrIAiFIqJyB82yLItrKJHQ3KaDiu36ZA%3D%3D'
+nseeds = 4
+extraWL = False
+week_end = 12 # final week to consider for calculating odds
+
 # For saving simulation results'
 leaguename = 'family'
+
+# Simulation settings
+seed = 2021 # Arbitrary
+rng = np.random.default_rng(seed)
+# Distribution is 'normal', 'lognormal', or 'random'
+distribution = 'random'
+nsim = 100
 
 # Define the league
 league = League(league_id=id, year=year, swid=swid, espn_s2=espn_s2)
 
-# What is the current week?
+# What is the current week? (not yet played)
 # league.current gives the current week real-time
-week_current = 8
-# week_current = 12
-
-# Last week of the regular season
-week_end = 12 # final week to consider for calculating odds
+week_current = league.current_week
+week_current = 12
 
 # Don't do calculation if it is requested for week at or beyond end of regular season
 if(week_current > week_end):
@@ -33,21 +41,11 @@ if(week_current > week_end):
 
 # List of teams
 teams = league.teams
-
-# Teams, seeds, extra WL settings
 nteams = len(teams)
-nseeds = 4
-extraWL = False
-
-# Simulation settings
-seed = 2021 # Arbitrary
-rng = np.random.default_rng(seed)
-distribution = 'normal'
-nsim = 1000
 
 # The 'outcomes' array stores how many times each team got a particular seed
 # The row is the team and the column is the outcome
-# e.g. outcomes[3,1] will be how often team #3 in the 'teams' list
+# e.g. outcomes[3,1] will be how often team #4 in the 'teams' list
 # got 2nd place in the final standings
 outcomes = np.zeros( (nteams,nteams), dtype=int)
 start_time = time.time()
@@ -107,11 +105,11 @@ df = pd.DataFrame({"Team name": [t.team_name for t in teams],
 # print(df)
 
 # Save it for later
-filename = leaguename + "_playoff_odds" + "_heading_into_week" + str(week_current) + ".pkl"
+filename = leaguename + "_playoff_odds_heading_into_week" + str(week_current) + "_year" + str(year) + "_nsim" + str(nsim) + ".pkl"
 df.to_pickle(filename)
 
 # Write results to csv file
-filename = "playoff_odds_" + leaguename + "_heading_into_week_" + str(week_current) + "_year_" + str(year) + ".csv"
+filename = leaguename + "_playoff_odds_heading_into_week" + str(week_current) + "_year" + str(year) + "_nsim" + str(nsim) + ".csv"
 with open(filename, mode='w', newline='') as csvfile:
     fwriter = csv.writer(csvfile)
     fwriter.writerow(['Team name','% chance make playoffs','% chance 1 seed','% chance 2 seed','% chance 3 seed','% chance 4 seed'])
