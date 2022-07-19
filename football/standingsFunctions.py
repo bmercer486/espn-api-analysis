@@ -56,8 +56,8 @@ def standingsGivenScores(scores, teams, extraWL=False):
     """
 
     # Standings including the extra W/L for top half/bottom half teams on a weekly basis
+    weekly_points_winners = []
     if(extraWL):
-        weekly_points_winners = []
         for w in range(0,nweeks):
             weekly_scores = []
             # Get scores for each team
@@ -168,8 +168,8 @@ def standings(league, week, extraWL=False):
     """
 
     # Standings including the extra W/L for top half/bottom half teams on a weekly basis
+    weekly_points_winners = []
     if(extraWL):
-        weekly_points_winners = []
         for w in range(0,week):
             weekly_scores = []
             # Get scores for each team
