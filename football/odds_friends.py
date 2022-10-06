@@ -11,7 +11,7 @@ import sys
 from leagueInfo_friends import *
 
 # Year and rules
-year = 2021
+year = 2022
 nseeds = 6
 extraWL = True
 week_end = 14 # final week to consider for calculating odds
@@ -24,7 +24,7 @@ seed = 2021 # Arbitrary
 rng = np.random.default_rng(seed)
 # Distribution is 'normal', 'lognormal', or 'random'
 distribution = 'random'
-nsim = 100
+nsim = 100000
 
 # Define the league
 league = League(league_id=id, year=year, swid=swid, espn_s2=espn_s2)
@@ -32,7 +32,7 @@ league = League(league_id=id, year=year, swid=swid, espn_s2=espn_s2)
 # What is the current week? (not yet played)
 # league.current_week gives the current week real-time
 week_current = league.current_week
-week_current = 14
+# week_current = 14
 
 # Don't do calculation if it is requested for week at or beyond end of regular season
 if(week_current > week_end):

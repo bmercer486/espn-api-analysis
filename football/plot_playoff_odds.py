@@ -10,11 +10,11 @@ import matplotlib.pyplot as plt
 save = True
 
 # Manually set the week for the odds calculation
-week = 14
+week = 5
 
 # Load the file if it exists
-fileDir = "odds_2021_files"
-fileName = "friends_playoff_odds_heading_into_week14.pkl"
+fileDir = "."
+fileName = "friends_playoff_odds_heading_into_week5_year2022_nsim100000.pkl"
 filePath = Path(fileDir + "/" + fileName)
 if filePath.is_file():
     # file exists
