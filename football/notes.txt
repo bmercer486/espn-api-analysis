@@ -1,3 +1,20 @@
+=================================
+July 20, 2022
+=================================
+Feature idea:
+
+Add a "seeding" function to the standingsFunctions. The idea would be to take the current standings as inputs, (includes, wins, losses, and total points) and compute the seeding based on league rules (specified as additional inputs)
+
+That way this one function could handle all three of my leagues. The specific cases to handle are
+- Family: Seeding is top 4 by record, with total points as tiebreaker between any 2 teams
+- Johnson: Top 4 by record (with extraWL), then seeds 5 and 6 are by total points amongst the remaining teams. Most points is a tiebreaker within each subset
+- Friends: Top 4 by record (with extraWL). ESPN sets the remaining seeds (most points? check league history)
+
+So some features of this function should include the following things
+* Specify number of primary seeds (non-wildcard) and wildcard seeds. e.g. in Johnson's league we have 6 seeds, 4 primary and 2 wildcard.
+* Specify seeding rules for each category. So for primary, specify if seeding is by record vs most points. Specify tiebreaker rule for any two seeds (really just one option here, most points.) Do the same for wildcard.
+
+=================================
 July 19, 2022
 =================================
 Here is a list of the key types of files and their roles:
@@ -29,7 +46,3 @@ historical_performance_*.py
 - Scripts that gather historical performance of teams in the league
 - Gets info about current as well as past teams
 - Nice to share with friends
-
-
-
-
